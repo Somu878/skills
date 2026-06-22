@@ -12,6 +12,28 @@ Dot Matrix renders a glowing grid of dots frame-by-frame from a Python scene mod
 
 ---
 
+## Install
+
+Install with the Skills CLI:
+
+```bash
+npx skills add Somu878/skills --skill dotmatrix -g
+```
+
+Or from a full GitHub URL:
+
+```bash
+npx skills add https://github.com/Somu878/skills --skill dotmatrix -g
+```
+
+For local testing from this repo:
+
+```bash
+npx skills add . --skill dotmatrix
+```
+
+---
+
 ## How it works
 
 When you invoke the skill, the agent:
@@ -81,6 +103,16 @@ python3 scripts/render_scene.py \
   --scale 2           # oversample for anti-aliasing
   --bloom 0.18        # glow blend 0..1 (0 = off)
   --self-check        # verify output after writing
+```
+
+---
+
+## Skill
+
+The skill lives at:
+
+```
+dotmatrix/SKILL.md
 ```
 
 ---
