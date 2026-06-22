@@ -6,7 +6,9 @@ Renders a grid of glowing dots pixel-by-pixel from a Python scene module, then e
 
 ## Demo
 
-<video src="https://github.com/Somu878/skills/raw/main/dotmatrix/demo.mp4" controls muted autoplay loop width="100%"></video>
+![Demo](demo.gif)
+
+[Download full video (mp4)](https://github.com/Somu878/skills/raw/main/dotmatrix/demo.mp4)
 
 ## Requirements
 
