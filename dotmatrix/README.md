@@ -1,58 +1,55 @@
 # Dot Matrix
 
-Generate ambient, lo-fi dot-matrix scene videos — cozy dioramas, rainy windows, cityscapes, and more. Inspired by the Claude FM aesthetic.
+**A skill for Claude Code, Cursor, and Codex that generates ambient dot-matrix scene videos.**
 
-Renders a grid of glowing dots pixel-by-pixel from a Python scene module, then encodes a seamless-loop MP4 with bloom and oversampling.
+Two bundled scenes · 64×40 dot grid · seamless-loop MP4 · bloom + anti-aliasing · custom scene authoring.
 
-## Demo
+<p align="center">
+  <img src="demo.gif" alt="Dot Matrix — ambient dot-matrix scene video" />
+</p>
 
-![Demo](demo.gif)
+Dot Matrix renders a glowing grid of dots frame-by-frame from a Python scene module and encodes a seamless-loop MP4 with soft bloom and oversample anti-aliasing. Each scene is a small Python file that controls every pixel's color at every timestep — warm dioramas, rainy night windows, cityscapes, and anything you can write in a `scene_color(gx, gy, t, W, H)` function.
 
-[Download full video (mp4)](https://github.com/Somu878/skills/raw/main/dotmatrix/demo.mp4)
+---
 
-## Requirements
+## How it works
 
-- Python 3
-- [Pillow](https://pypi.org/project/Pillow/) (`pip install pillow`)
-- [ffmpeg](https://ffmpeg.org/) (on PATH)
+When you invoke the skill, the agent:
 
-## Quick Start
+1. Selects a bundled scene (or helps you author a new one)
+2. Invokes `render_scene.py` with the scene module and your parameters
+3. Encodes a seamless-loop MP4 with bloom, oversampling, and self-check validation
+4. Delivers the video to your working directory
 
-```bash
-# Resolve the skill directory
-DOTMATRIX_SKILL_DIR="$(dirname "$(readlink -f SKILL.md)")"
+The skill is read-only — it renders into your project directory, never into the skill directory itself.
 
-# Render the cozy study scene (24s loop)
-python3 "$DOTMATRIX_SKILL_DIR/scripts/render_scene.py" \
-  --scene "$DOTMATRIX_SKILL_DIR/assets/cozy_study.py" \
-  --duration 24 --output cozy_study.mp4 --self-check
-```
+---
 
-## Bundled Scenes
+## What triggers it
 
-| Scene | File | Mood |
-|-------|------|------|
-| Cozy Study | `assets/cozy_study.py` | Warm study with bookshelf, fireplace, lamp, reader, plant |
-| Rain Window | `assets/rain_window.py` | Rainy night window with city lights and lightning |
+The skill activates when you ask for:
 
-## Usage
+- A dot-matrix animation or "Claude FM" style video
+- An ambient lo-fi scene (cozy study, rainy window, city lights)
+- A dot-matrix background or looping wallpaper
+- "Make me a Claude FM video" / "render a dot-matrix diorama"
 
-```
-python3 scripts/render_scene.py \
-  --scene <path/to/scene.py>   # scene module path
-  --output out.mp4              # output .mp4 path (required)
-  --duration 24                 # loop length in seconds (default 24)
-  --fps 24                      # frames per second (default 24)
-  --dot-size 14                 # rendered dot diameter in px (default 14)
-  --gap 4                       # px gap between dots (default 4)
-  --scale 2                     # internal overscale for anti-aliasing (default 2)
-  --bloom 0.18                  # glow blend 0..1 (default 0.18; 0 = off)
-  --self-check                  # verify output after writing
-```
+---
 
-## Authoring a Scene
+## Bundled scenes
 
-Create a Python module with:
+| Scene | File | Description |
+|-------|------|-------------|
+| Cozy Study | `assets/cozy_study.py` | Warm study with bookshelf, fireplace, lamp, reading person, plant — classic Claude FM vibe |
+| Rain Window | `assets/rain_window.py` | Rainy window at night with city lights, lightning flashes, and water droplets |
+
+When the mood is vague ("ambient dot-matrix scene"), the skill defaults to `cozy_study.py`.
+
+---
+
+## Authoring a custom scene
+
+Write a Python module that exports:
 
 ```python
 SCENE_W = 64
@@ -60,13 +57,46 @@ SCENE_H = 40
 BG = (r, g, b)
 
 def scene_color(gx, gy, t, W, H):
-    # return (r, g, b) for cell (gx, gy) at normalized time t in [0, 1)
+    # return (r, g, b) for dot at (gx, gy) at normalized time t ∈ [0, 1)
     ...
 ```
 
-The loop is seamless when `scene_color(..., t=0)` equals `scene_color(..., t→1)`. Use sines/cosines of `t * 2π * k` or phase wrapping with `% 1.0`.
+For a seamless loop, ensure `scene_color(..., t=0) == scene_color(..., t→1)`. Use `sin`/`cos` of `t * 2π * k` or phase variables wrapped with `% 1.0`.
 
-See `references/writing-a-scene.md` for the full contract and `references/palettes.md` for color palettes.
+Full contract and helpers: [`references/writing-a-scene.md`](references/writing-a-scene.md)
+Copy-paste palettes: [`references/palettes.md`](references/palettes.md)
+
+---
+
+## CLI parameters
+
+```
+python3 scripts/render_scene.py \
+  --scene <path>      # scene module path (required)
+  --output <path>     # output .mp4 path (required)
+  --duration 24       # loop length in seconds
+  --fps 24            # frames per second
+  --dot-size 14       # dot diameter in px
+  --gap 4             # px gap between dots
+  --scale 2           # oversample for anti-aliasing
+  --bloom 0.18        # glow blend 0..1 (0 = off)
+  --self-check        # verify output after writing
+```
+
+---
+
+## Requirements
+
+- Python 3 + [Pillow](https://pypi.org/project/Pillow/) (`pip install pillow`)
+- [ffmpeg](https://ffmpeg.org/) on PATH
+
+---
+
+## Demo
+
+[Download full video (mp4)](https://github.com/Somu878/skills/raw/main/dotmatrix/demo.mp4)
+
+---
 
 ## License
 
