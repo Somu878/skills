@@ -1,0 +1,4 @@
+interface:
+  display_name: "ReachCraft"
+  short_description: "Reach-first X posts from any context"
+  default_prompt: "Use $reachcraft to turn this context into a reach-optimized X post with hooks, first reply, and engagement plan."
